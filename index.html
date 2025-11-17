@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="description" content="Little Computer People - A C64-inspired virtual life simulation">
+    <meta name="theme-color" content="#000000">
+    <title>Little Computer People - C64 Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="game-wrapper">
+            <h1>Little Computer People</h1>
+            <canvas id="house" width="640" height="400" role="img" aria-label="Interactive house simulation"></canvas>
+            
+            <div class="status-panel">
+                <div class="status-item">
+                    <span class="label">Mood:</span>
+                    <span id="mood">Happy</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Activity:</span>
+                    <span id="activity">Relaxing</span>
+                </div>
+                <div class="status-item">
+                    <span class="label">Hunger:</span>
+                    <div class="bar">
+                        <div class="bar-fill" id="hunger-bar"></div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <span class="label">Energy:</span>
+                    <div class="bar">
+                        <div class="bar-fill" id="energy-bar"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button onclick="game.giveLetter()" aria-label="Send a letter">📧 Send Letter</button>
+                <button onclick="game.giveFood()" aria-label="Give food">🍔 Give Food</button>
+                <button onclick="game.playMusic()" aria-label="Play music">🎵 Play Music</button>
+                <button onclick="game.callPerson()" aria-label="Call person">📞 Call Person</button>
+            </div>
+            
+            <div class="message-box" id="message-box"></div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

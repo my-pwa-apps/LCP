@@ -1,0 +1,193 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: #000;
+    color: #a3a3ff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+/* C64 Scanline Effect */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 1000;
+    animation: scanline 8s linear infinite;
+}
+
+@keyframes scanline {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(2px); }
+}
+
+.container {
+    max-width: 1000px;
+    width: 100%;
+}
+
+.game-wrapper {
+    background: #000;
+    border: 4px solid #6c5eb5;
+    border-radius: 0;
+    padding: 20px;
+    box-shadow: none;
+}
+
+h1 {
+    text-align: center;
+    color: #a3a3ff;
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(163, 163, 255, 0.8),
+                 2px 2px 0 rgba(108, 94, 181, 0.5);
+    letter-spacing: 3px;
+    font-weight: normal;
+}
+
+#house {
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    border: 3px solid #6c5eb5;
+    margin: 0 auto 20px;
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    background: #000;
+    box-shadow: 0 0 20px rgba(108, 94, 181, 0.5),
+                inset 0 0 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Status Panel */
+.status-panel {
+    background: #000;
+    border: 2px solid #6c5eb5;
+    border-radius: 0;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.label {
+    color: #a3a3ff;
+    font-weight: normal;
+    min-width: 70px;
+}
+
+.bar {
+    flex: 1;
+    height: 16px;
+    background: #000;
+    border: 2px solid #6c5eb5;
+    border-radius: 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.bar-fill {
+    height: 100%;
+    background: #50e89d;
+    transition: width 0.3s ease, background 0.3s ease;
+    width: 100%;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Controls */
+.controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+button {
+    background: #6c5eb5;
+    color: #a3a3ff;
+    border: 2px solid #a3a3ff;
+    padding: 10px 16px;
+    border-radius: 0;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: none;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background: #a3a3ff;
+    color: #000;
+    transform: none;
+    box-shadow: 0 0 10px rgba(163, 163, 255, 0.5);
+}
+
+button:active {
+    transform: translateY(1px);
+    box-shadow: none;
+    background: #50e89d;
+    color: #000;
+    border-color: #50e89d;
+}
+
+/* Message Box */
+.message-box {
+    background: #000;
+    border: 2px solid #50e89d;
+    border-radius: 0;
+    padding: 15px;
+    min-height: 60px;
+    color: #50e89d;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.message-box:empty::after {
+    content: 'WATCH YOUR LITTLE COMPUTER PERSON LIVE THEIR LIFE...';
+    color: #6c5eb5;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.5em;
+    }
+    
+    .status-panel {
+        grid-template-columns: 1fr;
+    }
+    
+    .controls {
+        grid-template-columns: 1fr 1fr;
+    }
+}
