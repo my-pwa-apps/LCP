@@ -44,54 +44,55 @@ class LittleComputerPeople {
             hunger: 75,
             energy: 85,
             personX: 320,
-            personY: 330,
+            personY: 360,  // Fixed: actual floor position
             personFloor: 1,
             dogX: 280,
-            dogY: 330,
+            dogY: 360,  // Fixed: actual floor position
             isWalking: false,
             walkFrame: 0,
             direction: 1, // 1 = right, -1 = left
             currentAction: null,
             actionTimer: 0,
             targetX: 320,
-            targetY: 330,
+            targetY: 360,  // Fixed: actual floor position
             targetFloor: 1
         };
         
-        // House locations for pathfinding (adjusted for new rendering)
+        // House locations for pathfinding (fixed to match actual floor surfaces)
+        // Floor surfaces are at: Floor 3 = y:160, Floor 2 = y:270, Floor 1 = y:370
         this.locations = {
-            // Floor 3 (y=90-130)
-            bed: { x: 120, y: 110, floor: 3 },
-            nightstand: { x: 200, y: 110, floor: 3 },
-            bedroom_center: { x: 320, y: 110, floor: 3 },
+            // Floor 3 - Bedroom (actual floor at y=160)
+            bed: { x: 120, y: 155, floor: 3 },
+            nightstand: { x: 200, y: 155, floor: 3 },
+            bedroom_center: { x: 320, y: 155, floor: 3 },
             
             // Stairs 2-3
-            stairs_2_top: { x: 320, y: 140, floor: 3 },
-            stairs_2_mid1: { x: 320, y: 146, floor: 2.8 },
-            stairs_2_mid2: { x: 320, y: 152, floor: 2.6 },
-            stairs_2_mid3: { x: 320, y: 158, floor: 2.4 },
-            stairs_2_mid4: { x: 320, y: 164, floor: 2.2 },
-            stairs_2_bottom: { x: 320, y: 170, floor: 2 },
+            stairs_2_top: { x: 320, y: 160, floor: 3 },
+            stairs_2_mid1: { x: 320, y: 185, floor: 2.8 },
+            stairs_2_mid2: { x: 320, y: 210, floor: 2.6 },
+            stairs_2_mid3: { x: 320, y: 235, floor: 2.4 },
+            stairs_2_mid4: { x: 320, y: 260, floor: 2.2 },
+            stairs_2_bottom: { x: 320, y: 270, floor: 2 },
             
-            // Floor 2 (y=200-240)
-            chair: { x: 120, y: 220, floor: 2 },
-            tv: { x: 500, y: 220, floor: 2 },
-            table: { x: 250, y: 220, floor: 2 },
-            living_center: { x: 320, y: 220, floor: 2 },
+            // Floor 2 - Living Room (actual floor at y=270)
+            chair: { x: 120, y: 265, floor: 2 },
+            tv: { x: 500, y: 265, floor: 2 },
+            table: { x: 250, y: 265, floor: 2 },
+            living_center: { x: 320, y: 265, floor: 2 },
             
             // Stairs 1-2
-            stairs_1_top: { x: 320, y: 250, floor: 2 },
-            stairs_1_mid1: { x: 320, y: 256, floor: 1.8 },
-            stairs_1_mid2: { x: 320, y: 262, floor: 1.6 },
-            stairs_1_mid3: { x: 320, y: 268, floor: 1.4 },
-            stairs_1_mid4: { x: 320, y: 274, floor: 1.2 },
-            stairs_1_bottom: { x: 320, y: 280, floor: 1 },
+            stairs_1_top: { x: 320, y: 270, floor: 2 },
+            stairs_1_mid1: { x: 320, y: 292, floor: 1.8 },
+            stairs_1_mid2: { x: 320, y: 314, floor: 1.6 },
+            stairs_1_mid3: { x: 320, y: 336, floor: 1.4 },
+            stairs_1_mid4: { x: 320, y: 348, floor: 1.2 },
+            stairs_1_bottom: { x: 320, y: 360, floor: 1 },
             
-            // Floor 1 (y=310-350)
-            counter: { x: 150, y: 330, floor: 1 },
-            fridge: { x: 500, y: 330, floor: 1 },
-            sink: { x: 250, y: 330, floor: 1 },
-            kitchen_center: { x: 320, y: 330, floor: 1 }
+            // Floor 1 - Kitchen (actual floor at y=370)
+            counter: { x: 150, y: 360, floor: 1 },
+            fridge: { x: 500, y: 360, floor: 1 },
+            sink: { x: 250, y: 360, floor: 1 },
+            kitchen_center: { x: 320, y: 360, floor: 1 }
         };
         
         // Pathfinding
@@ -123,13 +124,13 @@ class LittleComputerPeople {
         this.drawHouseExterior();
         
         // Draw house interior floors
-        this.drawFloor(3, 58);   // Bedroom
-        this.drawFloor(2, 168);  // Living room
-        this.drawFloor(1, 278);  // Kitchen
+        this.drawFloor(3, 58);   // Bedroom (floor surface at y=148)
+        this.drawFloor(2, 168);  // Living room (floor surface at y=258)
+        this.drawFloor(1, 278);  // Kitchen (floor surface at y=368)
         
-        // Draw visible stairs
-        this.drawStairs(138, 2);  // Between floors 2-3
-        this.drawStairs(248, 1);  // Between floors 1-2
+        // Draw visible stairs with proper positioning
+        this.drawStairs(148, 2);  // Between floors 2-3 (from floor 2 surface)
+        this.drawStairs(258, 1);  // Between floors 1-2 (from floor 1 surface)
         
         // Draw furniture
         this.drawFurniture();
@@ -147,13 +148,13 @@ class LittleComputerPeople {
     }
     
     drawHouseExterior() {
-        // House outline - brown walls
+        // House outline with isometric 3D perspective
         const houseLeft = 20;
         const houseRight = 620;
         const houseTop = 40;
-        const houseBottom = 360;
+        const houseBottom = 380;
         
-        // Roof - triangular/peaked
+        // Roof - triangular/peaked with depth
         this.ctx.fillStyle = this.colors.orange;
         this.ctx.beginPath();
         this.ctx.moveTo(320, 10);  // Peak
@@ -162,145 +163,198 @@ class LittleComputerPeople {
         this.ctx.closePath();
         this.ctx.fill();
         
-        // Roof shadow line
+        // Roof right side (darker for 3D depth)
         this.ctx.fillStyle = this.colors.darkBrown;
+        this.ctx.beginPath();
+        this.ctx.moveTo(320, 10);
+        this.ctx.lineTo(houseRight + 10, houseTop);
+        this.ctx.lineTo(houseRight + 14, houseTop + 4);
+        this.ctx.lineTo(324, 14);
+        this.ctx.closePath();
+        this.ctx.fill();
+        
+        // Roof shadow line
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
         this.ctx.fillRect(houseLeft - 10, houseTop, houseRight - houseLeft + 20, 4);
         
-        // Left wall
+        // Left wall with shading
         this.ctx.fillStyle = this.colors.brown;
         this.ctx.fillRect(houseLeft, houseTop, 4, houseBottom - houseTop);
         
-        // Right wall
-        this.ctx.fillRect(houseRight - 4, houseTop, 4, houseBottom - houseTop);
-        
-        // Floor dividers (visible from outside)
+        // Right wall (darker for 3D depth)
         this.ctx.fillStyle = this.colors.darkBrown;
-        this.ctx.fillRect(houseLeft, 158, houseRight - houseLeft, 6);
-        this.ctx.fillRect(houseLeft, 268, houseRight - houseLeft, 6);
+        this.ctx.fillRect(houseRight - 4, houseTop, 8, houseBottom - houseTop);
         
-        // Bottom floor line
+        // Right side panel for 3D depth
+        this.ctx.fillStyle = this.colors.darkBrown;
+        this.ctx.fillRect(houseRight + 4, houseTop + 4, 8, houseBottom - houseTop - 4);
+        
+        // Floor dividers (visible from outside) - at correct positions
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        this.ctx.fillRect(houseLeft, 168, houseRight - houseLeft, 3);
+        this.ctx.fillRect(houseLeft, 278, houseRight - houseLeft, 3);
+        
+        // Floor beams (structural)
+        this.ctx.fillStyle = this.colors.darkBrown;
+        this.ctx.fillRect(houseLeft, 168, houseRight - houseLeft, 6);
+        this.ctx.fillRect(houseLeft, 278, houseRight - houseLeft, 6);
+        
+        // Bottom floor line with shadow
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        this.ctx.fillRect(houseLeft, houseBottom, houseRight - houseLeft, 2);
         this.ctx.fillStyle = this.colors.brown;
-        this.ctx.fillRect(houseLeft, houseBottom, houseRight - houseLeft, 6);
+        this.ctx.fillRect(houseLeft, houseBottom + 2, houseRight - houseLeft, 6);
     }
     
     drawFloor(floorNum, y) {
         const height = 110;
         const leftMargin = 24;
         const rightMargin = 620;
+        const floorDepth = 20;  // Isometric floor depth
         
         // Back wall with improved wallpaper pattern
         for (let i = leftMargin; i < rightMargin; i += 8) {
             this.ctx.fillStyle = i % 16 === 0 ? this.colors.purple : this.colors.lightBlue;
-            this.ctx.fillRect(i, y, 8, height - 12);
+            this.ctx.fillRect(i, y, 8, height - floorDepth);
         }
         
         // Add subtle wall details for depth
         this.ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
         for (let i = leftMargin; i < rightMargin; i += 32) {
-            this.ctx.fillRect(i, y, 1, height - 12);
+            this.ctx.fillRect(i, y, 1, height - floorDepth);
         }
         
-        // Floor surface (wooden planks)
-        this.ctx.fillStyle = this.colors.lightBrown;
-        this.ctx.fillRect(leftMargin, y + height - 12, rightMargin - leftMargin, 4);
-        this.ctx.fillStyle = this.colors.brown;
-        this.ctx.fillRect(leftMargin, y + height - 8, rightMargin - leftMargin, 8);
+        // Isometric floor - draw as trapezoid for perspective
+        const floorY = y + height - floorDepth;
         
-        // Wood plank lines for detail
+        // Floor front edge (closest to viewer) - lighter
+        this.ctx.fillStyle = this.colors.lightBrown;
+        this.ctx.fillRect(leftMargin, floorY, rightMargin - leftMargin, 6);
+        
+        // Floor middle section
+        this.ctx.fillStyle = this.colors.brown;
+        this.ctx.fillRect(leftMargin, floorY + 6, rightMargin - leftMargin, 10);
+        
+        // Floor back edge (farthest from viewer) - darker for depth
+        this.ctx.fillStyle = this.colors.darkBrown;
+        this.ctx.fillRect(leftMargin, floorY + 16, rightMargin - leftMargin, 4);
+        
+        // Wood plank lines for detail with perspective
         this.ctx.fillStyle = this.colors.darkBrown;
         for (let i = leftMargin; i < rightMargin; i += 48) {
-            this.ctx.fillRect(i, y + height - 8, 2, 8);
+            this.ctx.fillRect(i, floorY, 2, floorDepth);
         }
         
-        // Floor edge shadow
-        this.ctx.fillRect(leftMargin, y + height, rightMargin - leftMargin, 2);
+        // Floor baseboard shadow at wall junction
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        this.ctx.fillRect(leftMargin, floorY, rightMargin - leftMargin, 2);
     }
     
     drawStairs(y, stairSet) {
-        // Draw visible isometric stairs with improved 3D perspective
-        const stairWidth = 50;
-        const stairDepth = 8;
+        // Draw isometric stairs with proper 3D perspective
+        const stairWidth = 60;  // Wider for better visibility
+        const stairDepth = 12;  // Deeper for isometric view
         const centerX = 320 - stairWidth / 2;
-        const numStairs = 5;
+        const numStairs = 8;  // More stairs between floors
+        const stepHeight = 14;  // Vertical rise per step
         
         for (let i = 0; i < numStairs; i++) {
-            const stairY = y + i * 6;
-            const depth = (numStairs - i) * 0.5; // Depth perspective
+            const stairY = y + i * stepHeight;
+            const perspectiveScale = 1 - (i * 0.02);  // Slight scaling for depth
+            const scaledWidth = stairWidth * perspectiveScale;
+            const xOffset = (stairWidth - scaledWidth) / 2;
             
-            // Shadow underneath for depth
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-            this.ctx.fillRect(centerX + 2, stairY + stairDepth + 6, stairWidth - 2, 2);
+            // Shadow underneath each step
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+            this.ctx.fillRect(centerX + xOffset + 2, stairY + stairDepth + 1, scaledWidth - 2, 3);
             
-            // Stair tread (top surface) - isometric view with depth gradient
+            // Stair tread (top surface) - lightest
             this.ctx.fillStyle = this.colors.lightBrown;
-            this.ctx.fillRect(centerX, stairY, stairWidth, stairDepth);
+            this.ctx.fillRect(centerX + xOffset, stairY, scaledWidth, stairDepth);
             
-            // Highlight on top edge for 3D effect
+            // Tread highlight (front edge)
             this.ctx.fillStyle = this.colors.peach;
-            this.ctx.fillRect(centerX, stairY, stairWidth, 1);
+            this.ctx.fillRect(centerX + xOffset, stairY, scaledWidth, 2);
             
-            // Stair riser (front face) with gradient
+            // Stair riser (vertical face) - medium tone
             this.ctx.fillStyle = this.colors.brown;
-            this.ctx.fillRect(centerX, stairY + stairDepth, stairWidth, 6);
+            this.ctx.fillRect(centerX + xOffset, stairY + stairDepth, scaledWidth, stepHeight - stairDepth);
             
-            // Shadow/depth line
+            // Riser shadow at bottom
             this.ctx.fillStyle = this.colors.darkBrown;
-            this.ctx.fillRect(centerX, stairY + stairDepth + 5, stairWidth, 1);
+            this.ctx.fillRect(centerX + xOffset, stairY + stepHeight - 2, scaledWidth, 2);
             
-            // Left side rail with depth
+            // Left side panel for 3D depth
             this.ctx.fillStyle = this.colors.darkBrown;
-            this.ctx.fillRect(centerX - 3, stairY, 3, 14);
+            this.ctx.fillRect(centerX - 4, stairY, 4, stepHeight);
             
-            // Right side rail with depth
-            this.ctx.fillRect(centerX + stairWidth, stairY, 3, 14);
+            // Right side panel for 3D depth
+            this.ctx.fillRect(centerX + stairWidth, stairY, 4, stepHeight);
         }
         
-        // Bannister posts with enhanced detail
+        // Bannister rails on both sides
         this.ctx.fillStyle = this.colors.darkBrown;
         for (let i = 0; i <= numStairs; i++) {
-            const postY = y + i * 6;
-            this.ctx.fillRect(centerX - 3, postY, 3, 3);
-            this.ctx.fillRect(centerX + stairWidth, postY, 3, 3);
+            const postY = y + i * stepHeight;
+            // Left posts
+            this.ctx.fillRect(centerX - 6, postY, 4, 4);
+            // Right posts
+            this.ctx.fillRect(centerX + stairWidth + 2, postY, 4, 4);
             
-            // Highlight on posts
+            // Post highlights for 3D
             this.ctx.fillStyle = this.colors.brown;
-            this.ctx.fillRect(centerX - 3, postY, 1, 3);
-            this.ctx.fillRect(centerX + stairWidth, postY, 1, 3);
+            this.ctx.fillRect(centerX - 6, postY, 1, 4);
+            this.ctx.fillRect(centerX + stairWidth + 2, postY, 1, 4);
             this.ctx.fillStyle = this.colors.darkBrown;
         }
+        
+        // Top handrails
+        this.ctx.fillStyle = this.colors.darkBrown;
+        this.ctx.fillRect(centerX - 6, y, 4, numStairs * stepHeight);
+        this.ctx.fillRect(centerX + stairWidth + 2, y, 4, numStairs * stepHeight);
     }
     
     drawGround() {
-        // Grass pattern at bottom
+        // Ground base with depth
+        this.ctx.fillStyle = this.colors.darkGreen;
+        this.ctx.fillRect(0, 380, 640, 20);
+        
+        // Grass pattern at bottom with texture
         for (let i = 0; i < 640; i += 16) {
             this.ctx.fillStyle = i % 32 === 0 ? this.colors.green : this.colors.darkGreen;
-            this.ctx.fillRect(i, 366, 16, 34);
+            this.ctx.fillRect(i, 382, 16, 18);
+        }
+        
+        // Grass blade details
+        this.ctx.fillStyle = this.colors.green;
+        for (let i = 0; i < 640; i += 8) {
+            this.ctx.fillRect(i + Math.random() * 4, 382 + Math.random() * 10, 1, 4);
         }
     }
     
     drawFurniture() {
-        // Floor 3 - Bedroom
-        this.drawBed(80, 90);
-        this.drawNightstand(180, 100);
-        this.drawWindow(550, 70);
+        // Floor 3 - Bedroom (floor surface at y=150)
+        this.drawBed(80, 125);
+        this.drawNightstand(180, 135);
+        this.drawWindow(550, 65);
         
-        // Floor 2 - Living Room
-        this.drawChair(80, 190);
-        this.drawTable(200, 195);
-        this.drawTV(480, 190);
-        this.drawWindow(550, 180);
+        // Floor 2 - Living Room (floor surface at y=260)
+        this.drawChair(80, 220);
+        this.drawTable(200, 225);
+        this.drawTV(480, 218);
+        this.drawWindow(550, 175);
         
-        // Floor 1 - Kitchen
-        this.drawCounter(100, 305);
-        this.drawFridge(480, 290);
-        this.drawSink(220, 310);
-        this.drawWindow(550, 290);
+        // Floor 1 - Kitchen (floor surface at y=360)
+        this.drawCounter(100, 330);
+        this.drawFridge(480, 308);
+        this.drawSink(220, 335);
+        this.drawWindow(550, 285);
     }
     
     drawBed(x, y) {
-        // Shadow
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-        this.ctx.fillRect(x + 2, y + 32, 60, 3);
+        // Shadow on floor
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        this.ctx.fillRect(x + 2, y + 35, 64, 4);
         
         // Bed frame
         this.ctx.fillStyle = this.colors.brown;
@@ -332,6 +386,18 @@ class LittleComputerPeople {
         this.ctx.fillStyle = this.colors.lightGray;
         this.ctx.fillRect(x + 48, y + 4, 2, 10);
         this.ctx.fillRect(x + 42, y + 11, 14, 3);
+        
+        // Right side panel for 3D isometric depth
+        this.ctx.fillStyle = this.colors.darkBrown;
+        this.ctx.fillRect(x + 60, y + 2, 6, 32);
+        this.ctx.fillStyle = this.colors.brown;
+        this.ctx.fillRect(x + 60, y + 2, 6, 2);
+        
+        // Right side panel for 3D isometric depth
+        this.ctx.fillStyle = this.colors.darkBrown;
+        this.ctx.fillRect(x + 60, y + 2, 6, 32);
+        this.ctx.fillStyle = this.colors.brown;
+        this.ctx.fillRect(x + 60, y + 2, 6, 2);
         
         // Posts with depth
         this.ctx.fillStyle = this.colors.darkBrown;
@@ -395,12 +461,17 @@ class LittleComputerPeople {
     }
     
     drawWindow(x, y) {
-        // Frame
+        // Outer frame with 3D depth
+        this.ctx.fillStyle = this.colors.brown;
+        this.ctx.fillRect(x - 2, y - 2, 44, 54);
+        
+        // Main frame
         this.ctx.fillStyle = this.colors.lightGray;
         this.ctx.fillRect(x, y, 40, 50);
-        // Frame inner shadow
+        // Frame inner shadow for depth
         this.ctx.fillStyle = this.colors.gray;
         this.ctx.fillRect(x + 2, y + 48, 36, 2);
+        this.ctx.fillRect(x + 36, y + 2, 2, 46);
         
         // Glass with sky reflection
         this.ctx.fillStyle = this.colors.lightBlue;
@@ -415,10 +486,14 @@ class LittleComputerPeople {
         this.ctx.fillStyle = this.colors.lightGray;
         this.ctx.fillRect(x + 18, y + 4, 4, 42);
         this.ctx.fillRect(x + 4, y + 23, 32, 4);
-        // Bar highlights
+        // Bar highlights for 3D
         this.ctx.fillStyle = this.colors.white;
         this.ctx.fillRect(x + 18, y + 4, 1, 42);
         this.ctx.fillRect(x + 4, y + 23, 32, 1);
+        // Bar shadows for 3D
+        this.ctx.fillStyle = this.colors.gray;
+        this.ctx.fillRect(x + 21, y + 4, 1, 42);
+        this.ctx.fillRect(x + 4, y + 26, 32, 1);
     }
     
     drawChair(x, y) {
@@ -464,6 +539,12 @@ class LittleComputerPeople {
         this.ctx.fillStyle = this.colors.pink;
         this.ctx.fillRect(x + 9, y + 12, 2, 2);
         this.ctx.fillRect(x + 21, y + 12, 2, 2);
+        
+        // Right side panel for 3D depth
+        this.ctx.fillStyle = this.colors.purple;
+        this.ctx.fillRect(x + 32, y + 2, 5, 38);
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        this.ctx.fillRect(x + 34, y + 2, 3, 38);
     }
     
     drawTable(x, y) {
@@ -514,6 +595,12 @@ class LittleComputerPeople {
         this.ctx.fillStyle = this.colors.green;
         this.ctx.fillRect(x + 27, y + 8, 2, 1);
         this.ctx.fillRect(x + 30, y + 7, 2, 1);
+        
+        // Right side of table top for 3D depth
+        this.ctx.fillStyle = this.colors.darkBrown;
+        this.ctx.fillRect(x + 60, y + 22, 6, 6);
+        this.ctx.fillStyle = this.colors.brown;
+        this.ctx.fillRect(x + 60, y + 22, 6, 1);
     }
     
     drawTV(x, y) {
@@ -545,11 +632,19 @@ class LittleComputerPeople {
             );
         }
         
+        // TV side panel for depth
+        this.ctx.fillStyle = this.colors.darkBrown;
+        this.ctx.fillRect(x + 48, y + 12, 6, 40);
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        this.ctx.fillRect(x + 50, y + 12, 4, 40);
+        
         // Stand
         this.ctx.fillStyle = this.colors.gray;
         this.ctx.fillRect(x + 18, y + 52, 12, 8);
         this.ctx.fillStyle = this.colors.darkBrown;
         this.ctx.fillRect(x + 18, y + 59, 12, 1);
+        // Stand side
+        this.ctx.fillRect(x + 30, y + 54, 4, 6);
     }
     
     drawCounter(x, y) {
@@ -618,6 +713,18 @@ class LittleComputerPeople {
         this.ctx.fillRect(x + 68, y + 16, 8, 1);
         this.ctx.fillRect(x + 24, y + 28, 8, 1);
         this.ctx.fillRect(x + 68, y + 28, 8, 1);
+        
+        // Right side panel for 3D depth
+        this.ctx.fillStyle = this.colors.darkBrown;
+        this.ctx.fillRect(x + 100, y + 2, 8, 38);
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        this.ctx.fillRect(x + 104, y + 2, 4, 38);
+        
+        // Countertop right edge
+        this.ctx.fillStyle = this.colors.gray;
+        this.ctx.fillRect(x + 100, y, 8, 8);
+        this.ctx.fillStyle = this.colors.darkBrown;
+        this.ctx.fillRect(x + 104, y + 2, 4, 6);
     }
     
     drawFridge(x, y) {
@@ -628,9 +735,12 @@ class LittleComputerPeople {
         // Body
         this.ctx.fillStyle = this.colors.lightGray;
         this.ctx.fillRect(x, y, 36, 60);
-        // Side panel for depth
+        // Right side panel for 3D isometric depth
         this.ctx.fillStyle = this.colors.gray;
-        this.ctx.fillRect(x + 36, y + 2, 4, 58);
+        this.ctx.fillRect(x + 36, y + 2, 10, 58);
+        // Side panel shading for depth
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        this.ctx.fillRect(x + 40, y + 2, 6, 58);
         
         // Top section
         this.ctx.fillStyle = this.colors.white;
@@ -745,9 +855,9 @@ class LittleComputerPeople {
         const y = Math.floor(this.state.personY);
         const dir = this.state.direction;
         
-        // Shadow for depth
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-        this.ctx.fillRect(x - 6, y + 8, 12, 2);
+        // Shadow on floor for proper 3D grounding
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        this.ctx.fillRect(x - 7, y + 2, 14, 3);
         
         // Head with better shading
         this.ctx.fillStyle = this.colors.peach;
@@ -807,9 +917,9 @@ class LittleComputerPeople {
         const y = Math.floor(this.state.dogY);
         const tailWag = Math.sin(Date.now() * 0.01) * 2;
         
-        // Shadow
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-        this.ctx.fillRect(x - 8, y + 6, 16, 2);
+        // Shadow on floor for proper 3D grounding
+        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        this.ctx.fillRect(x - 9, y + 2, 18, 3);
         
         // Body with shading
         this.ctx.fillStyle = this.colors.brown;
